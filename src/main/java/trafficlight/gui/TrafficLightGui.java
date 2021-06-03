@@ -1,13 +1,16 @@
 package trafficlight.gui;
 
+import trafficlight.Observer.Observer;
+import trafficlight.Observer.Subject;
 import trafficlight.ctrl.TrafficLightCtrl;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import trafficlight.states.State;
 
-public class TrafficLightGui extends JFrame implements ActionListener {
+public class TrafficLightGui extends JFrame implements ActionListener, Observer {
 
     public static final String ACTION_COMMAND_STOP = "stop";
 
@@ -22,6 +25,10 @@ public class TrafficLightGui extends JFrame implements ActionListener {
     private TrafficLightCtrl trafficLightCtrl = null;
 
 
+
+
+
+
     public TrafficLightGui(TrafficLightCtrl ctrl){
         super(NAME_OF_THE_GAME);
         trafficLightCtrl = ctrl;
@@ -29,10 +36,69 @@ public class TrafficLightGui extends JFrame implements ActionListener {
         init();
     }
 
+    public void update(State current){
+
+       /* if(!current.getColor().equals(next.getColor())){
+
+            switch (current.getColor()){
+                case "green":
+                    green.turnOn(false);
+                    break;
+                case "yellow":
+                    yellow.turnOn(false);
+                    break;
+                case "red":
+                    red.turnOn(false);
+
+            }}*/
+
+        switch (current.getColor()){
+            case "green":
+                green.turnOn(true);
+                if (red.isOn){
+                    red.turnOn(false);
+                }
+                if (yellow.isOn){
+                    yellow.turnOn(false);
+                }
+                break;
+            case "yellow":
+                yellow.turnOn(true);
+                if (red.isOn){
+                    red.turnOn(false);
+                }
+                if (green.isOn){
+                    green.turnOn(false);
+                }
+                break;
+            case "red":
+                red.turnOn(true);
+                if (green.isOn){
+                    green.turnOn(false);
+                }
+                if (yellow.isOn){
+                    yellow.turnOn(false);
+                }
+                break;
+
+        }
+
+
+    }
     private void initLights(TrafficLightCtrl ctrl) {
         //TODO implement a part of the pattern here
         //create the TrafficLight
         //connect subject and observer
+//
+        green = new TrafficLight(Color.green);
+        green.turnOn(false);
+        red = new TrafficLight(Color.red);
+        red.turnOn(false);
+        yellow = new TrafficLight(Color.yellow);
+        yellow.turnOn(false);
+
+        ctrl.addObserver(this);
+
     }
 
     private void init() {

@@ -2,7 +2,15 @@ package trafficlight.states;
 
 //TODO implement a part of the pattern here
 
-public abstract class State {
+import trafficlight.Observer.Observer;
+import trafficlight.Observer.Subject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class State  {
+
+
 
     public abstract State getNextState();
 
@@ -11,4 +19,5 @@ public abstract class State {
     public String getSting(){
         return getColor();
     }
+
 }

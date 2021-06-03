@@ -1,9 +1,11 @@
 package trafficlight.ctrl;
 
+import trafficlight.Observer.Subject;
+import trafficlight.gui.TrafficLight;
 import trafficlight.gui.TrafficLightGui;
 import trafficlight.states.State;
 
-public class TrafficLightCtrl {
+public class TrafficLightCtrl extends Subject {
 
     private State greenState;
 
@@ -25,6 +27,8 @@ public class TrafficLightCtrl {
         gui = new TrafficLightGui(this);
         gui.setVisible(true);
         //TODO useful to update the current state
+        // Info an alle Observer, was jetzt der current State ist
+        notifyObservers(currentState);
     }
 
     private void initStates() {
@@ -33,6 +37,11 @@ public class TrafficLightCtrl {
             public State getNextState() {
                 previousState = currentState;
                 //TODO useful to update the current state and the old one
+
+                // Alle Observer werden über den nächsten Zustand informiert
+                notifyObservers(yellowState);
+                //
+
                 return yellowState;
             }
             @Override
@@ -46,6 +55,8 @@ public class TrafficLightCtrl {
             public State getNextState() {
                 previousState = currentState;
                 //TODO useful to update the current state and the old one
+                notifyObservers(yellowState);
+                //
                 return yellowState;
             }
             @Override
@@ -60,10 +71,15 @@ public class TrafficLightCtrl {
                 if (previousState.equals(greenState)) {
                     previousState = currentState;
                     //TODO useful to update the current state and the old one
+                    notifyObservers(redState);
+                    //
+
                     return redState;
                 }else {
                     previousState = currentState;
                     //TODO useful to update the current state and the old one
+                    notifyObservers(greenState);
+
                     return greenState;
                 }
             }
@@ -104,6 +120,7 @@ public class TrafficLightCtrl {
 
     public void nextState() {
         currentState = currentState.getNextState();
+
     }
 
     public void stop() {
