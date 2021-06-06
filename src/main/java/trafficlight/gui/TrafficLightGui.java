@@ -24,9 +24,7 @@ public class TrafficLightGui extends JFrame implements ActionListener, Observer 
 
     private TrafficLightCtrl trafficLightCtrl = null;
 
-
-
-
+    private TrafficLight previosLight = null;
 
 
     public TrafficLightGui(TrafficLightCtrl ctrl){
@@ -36,60 +34,57 @@ public class TrafficLightGui extends JFrame implements ActionListener, Observer 
         init();
     }
 
+    public TrafficLight getGreen() {
+        return green;
+    }
+
+    public TrafficLight getYellow() {
+        return yellow;
+    }
+
+    public TrafficLight getRed() {
+        return red;
+    }
+
+    @Override
     public void update(State current){
-
-       /* if(!current.getColor().equals(next.getColor())){
-
-            switch (current.getColor()){
-                case "green":
-                    green.turnOn(false);
-                    break;
-                case "yellow":
-                    yellow.turnOn(false);
-                    break;
-                case "red":
-                    red.turnOn(false);
-
-            }}*/
-
+// if stop button is pressed - this Trafficlight unsubscribes from the CTR Subject
+        if (current == null){
+            trafficLightCtrl.removeObserver(this);
+        }
+else {
         switch (current.getColor()){
             case "green":
                 green.turnOn(true);
-                if (red.isOn){
-                    red.turnOn(false);
-                }
-                if (yellow.isOn){
-                    yellow.turnOn(false);
-                }
+                if(previosLight != null){
+                previosLight.turnOn(false);}
+                previosLight = green;
                 break;
+
             case "yellow":
                 yellow.turnOn(true);
-                if (red.isOn){
-                    red.turnOn(false);
-                }
-                if (green.isOn){
-                    green.turnOn(false);
-                }
+                if(previosLight != null){
+                previosLight.turnOn(false);}
+                previosLight = yellow;
                 break;
+
             case "red":
                 red.turnOn(true);
-                if (green.isOn){
-                    green.turnOn(false);
-                }
-                if (yellow.isOn){
-                    yellow.turnOn(false);
-                }
+                if(previosLight != null){
+                previosLight.turnOn(false);}
+                previosLight = red;
                 break;
 
         }
 
 
-    }
+    }}
     private void initLights(TrafficLightCtrl ctrl) {
         //TODO implement a part of the pattern here
         //create the TrafficLight
         //connect subject and observer
 //
+        // neue Lichter wurden erstellt und auf "aus" geschalten
         green = new TrafficLight(Color.green);
         green.turnOn(false);
         red = new TrafficLight(Color.red);
@@ -97,6 +92,9 @@ public class TrafficLightGui extends JFrame implements ActionListener, Observer 
         yellow = new TrafficLight(Color.yellow);
         yellow.turnOn(false);
 
+       // previosLight = yellow;
+
+        //das TrafficlightObjekt wurde in die Liste der zu benarichtigenden Objekte eingefügt
         ctrl.addObserver(this);
 
     }

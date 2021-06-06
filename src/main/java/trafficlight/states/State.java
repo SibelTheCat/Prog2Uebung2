@@ -10,8 +10,6 @@ import java.util.List;
 
 public abstract class State  {
 
-
-
     public abstract State getNextState();
 
     public abstract String getColor();

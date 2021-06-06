@@ -1,7 +1,6 @@
 package trafficlight.ctrl;
 
 import trafficlight.Observer.Subject;
-import trafficlight.gui.TrafficLight;
 import trafficlight.gui.TrafficLightGui;
 import trafficlight.states.State;
 
@@ -21,7 +20,7 @@ public class TrafficLightCtrl extends Subject {
 
     private boolean doRun = true;
 
-    public TrafficLightCtrl() {
+    private TrafficLightCtrl(){
         super();
         initStates();
         gui = new TrafficLightGui(this);
@@ -31,16 +30,21 @@ public class TrafficLightCtrl extends Subject {
         notifyObservers(currentState);
     }
 
+    private static TrafficLightCtrl instance = null;
+
+    public static TrafficLightCtrl getInstance() {
+        if (instance == null) {
+            instance = new TrafficLightCtrl();
+        }
+        return instance;
+    }
     private void initStates() {
         greenState = new State() {
             @Override
             public State getNextState() {
+                notifyObservers(currentState);
                 previousState = currentState;
                 //TODO useful to update the current state and the old one
-
-                // Alle Observer werden über den nächsten Zustand informiert
-                notifyObservers(yellowState);
-                //
 
                 return yellowState;
             }
@@ -53,9 +57,10 @@ public class TrafficLightCtrl extends Subject {
         redState = new State() {
             @Override
             public State getNextState() {
+                notifyObservers(currentState);
                 previousState = currentState;
                 //TODO useful to update the current state and the old one
-                notifyObservers(yellowState);
+
                 //
                 return yellowState;
             }
@@ -69,16 +74,17 @@ public class TrafficLightCtrl extends Subject {
             @Override
             public State getNextState() {
                 if (previousState.equals(greenState)) {
+                    notifyObservers(currentState);
                     previousState = currentState;
                     //TODO useful to update the current state and the old one
-                    notifyObservers(redState);
+
                     //
 
                     return redState;
                 }else {
+                    notifyObservers(currentState);
                     previousState = currentState;
                     //TODO useful to update the current state and the old one
-                    notifyObservers(greenState);
 
                     return greenState;
                 }
@@ -90,6 +96,14 @@ public class TrafficLightCtrl extends Subject {
         };
         currentState = greenState;
         previousState = yellowState;
+    }
+
+    public State getCurrentState(){
+        return currentState;
+    }
+
+    public State getPreviousState(){
+        return previousState;
     }
 
     public State getGreenState() {
@@ -125,5 +139,8 @@ public class TrafficLightCtrl extends Subject {
 
     public void stop() {
         doRun = false;
+        notifyObservers(null);
+
+
     }
 }

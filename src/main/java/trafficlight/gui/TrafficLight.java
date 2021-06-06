@@ -24,4 +24,5 @@ public class TrafficLight extends Light  {
 
 
     //TODO implement a part of the pattern here
+    //Wurde in der TrafficLightGui gemacht
 }
